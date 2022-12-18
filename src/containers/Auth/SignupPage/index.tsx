@@ -3,9 +3,9 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-
-import { useAppDispatch } from "store/hooks";
-import { signup } from "store/modules/auth";
+import { emailReg, errorMsg, passwordReg } from "helpers/const.helper";
+import { toast } from "react-toastify";
+import { signup } from "hooks/auth";
 
 const validationSchema = yup.object({
   email: yup.string().required(),
@@ -18,16 +18,19 @@ const initialValues = {
 };
 
 const SignupPage = () => {
-  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values, actions) => {
-      dispatch(signup(values)).then(() => {
-        history.push("/");
-      });
+      !emailReg.test(values.email)
+        ? toast.error(errorMsg.mail)
+        : !passwordReg.test(values.password)
+        ? toast.error(errorMsg.password)
+        : signup(values).then(() => {
+            history.push("/signup/changeemail", { data: values.email });
+          });
       actions.resetForm({ values: initialValues });
     },
   });

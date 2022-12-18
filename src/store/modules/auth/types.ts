@@ -8,6 +8,24 @@ export interface User {
   email: string;
 }
 
+export interface SignupVerify {
+  token: string;
+}
+
+export interface ForgotPassword {
+  email: string;
+}
+
+export interface ForgotPasswordVerify {
+  token: string;
+  newpassword: string;
+}
+
+export interface ChangeEmail {
+  email: string;
+  newemail: string;
+}
+
 export interface AuthState {
   user: Partial<User>;
   loading: boolean;

@@ -15,7 +15,17 @@ import Loader from "components/Loader";
 
 const Main = React.lazy(() => import("containers/Main"));
 const SigninPage = React.lazy(() => import("containers/Auth/SigninPage"));
+const ChangeEmail = React.lazy(() => import("containers/Auth/ChangeEmail"));
+const ForgotPassword = React.lazy(
+  () => import("containers/Auth/ForgotPassword")
+);
+const ChangePassword = React.lazy(
+  () => import("containers/Auth/ChangePassword")
+);
 const SignupPage = React.lazy(() => import("containers/Auth/SignupPage"));
+const SignupPageVerify = React.lazy(
+  () => import("containers/Auth/SignupPageVerify")
+);
 const ErrorBoundary = React.lazy(() => import("components/ErrorBoundary"));
 
 const App = () => {
@@ -26,7 +36,19 @@ const App = () => {
     return (
       <Switch>
         <Route exact path="/signin" component={SigninPage}></Route>
+        <Route exact path="/forgotpassword" component={ForgotPassword}></Route>
+        <Route
+          exact
+          path="/forgotpassword/verify/:tokenId"
+          component={ChangePassword}
+        ></Route>
         <Route exact path="/signup" component={SignupPage}></Route>
+        <Route exact path="/signup/changeemail" component={ChangeEmail}></Route>
+        <Route
+          exact
+          path="/signup/verify/:tokenId"
+          component={SignupPageVerify}
+        ></Route>
 
         <Redirect to="/signin" />
       </Switch>
@@ -49,7 +71,7 @@ const App = () => {
         <Suspense fallback={<Loader />}>
           <ErrorBoundary>
             <Container fluid className="p-0">
-              {user.id ? renderMain() : renderAuth()}
+              {user?.id ? renderMain() : renderAuth()}
             </Container>
           </ErrorBoundary>
         </Suspense>
