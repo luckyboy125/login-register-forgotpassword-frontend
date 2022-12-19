@@ -5,11 +5,12 @@ import AsyncLocalStorage from "@createnextapp/async-local-storage";
 import {
   Credentials,
   AuthResult,
-  SignupVerify,
   ForgotPasswordVerify,
   ForgotPassword,
   ChangeEmail,
+  Token,
 } from "../store/modules/auth/types";
+import { storageConst } from "helpers/const.helper";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_API_URL,
@@ -18,7 +19,7 @@ const axiosInstance: AxiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async function (config: AxiosRequestConfig) {
-    const token = await AsyncLocalStorage.getItem("token");
+    const token = await AsyncLocalStorage.getItem(storageConst);
     if (config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     } else {
@@ -42,9 +43,11 @@ axiosInstance.interceptors.response.use(
 const api = {
   signin: (credentials: Credentials) =>
     axiosInstance.post<AuthResult>("auth/signin", credentials),
+  signinwithtoken: (token: Token) =>
+    axiosInstance.post<AuthResult>("auth/signin/token", token),
   signup: (credentials: Credentials) =>
     axiosInstance.post<AuthResult>("auth/signup", credentials),
-  signupverify: (token: SignupVerify) =>
+  signupverify: (token: Token) =>
     axiosInstance.post<AuthResult>("auth/signup/verify", token),
   forgotpassword: (email: ForgotPassword) =>
     axiosInstance.post<AuthResult>("auth/forgotpassword", email),
@@ -52,6 +55,7 @@ const api = {
     axiosInstance.post<AuthResult>("auth/forgotpassword/verify", params),
   changeemail: (emails: ChangeEmail) =>
     axiosInstance.post<AuthResult>("auth/changeemail", emails),
+  signout: () => axiosInstance.post<AuthResult>("auth/signout"),
 };
 
 export default api;

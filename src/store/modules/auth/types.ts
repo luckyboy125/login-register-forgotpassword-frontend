@@ -8,7 +8,7 @@ export interface User {
   email: string;
 }
 
-export interface SignupVerify {
+export interface Token {
   token: string;
 }
 

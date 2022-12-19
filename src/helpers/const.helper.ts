@@ -8,3 +8,4 @@ export const errorMsg = {
     "Please enter a strong password. Password must be at least 8 characters and contain at least one special character and number!",
   token: "Something went wrong",
 };
+export const storageConst = "token";

@@ -11,7 +11,6 @@ const ChangeEmail = () => {
   const history = useHistory();
   const location = useLocation();
   const preEmail: any = location.state;
-  console.log("test params : ", preEmail);
 
   const validationSchema = yup.object({
     newemail: yup.string().required(),

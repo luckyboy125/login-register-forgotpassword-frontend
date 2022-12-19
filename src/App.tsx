@@ -1,17 +1,20 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Container } from "react-bootstrap";
 
-import { useAppSelector } from "store/hooks";
+import { useAppDispatch, useAppSelector } from "store/hooks";
 import { RootState } from "store/store";
+import AsyncLocalStorage from "@createnextapp/async-local-storage";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 import Loader from "components/Loader";
+import { signinWithToken } from "store/modules/auth";
+import { storageConst } from "helpers/const.helper";
 
 const Main = React.lazy(() => import("containers/Main"));
 const SigninPage = React.lazy(() => import("containers/Auth/SigninPage"));
@@ -30,7 +33,16 @@ const ErrorBoundary = React.lazy(() => import("components/ErrorBoundary"));
 
 const App = () => {
   const user = useAppSelector((state: RootState) => state.auth.user);
-  console.log("user", user);
+  const dispatch = useAppDispatch();
+
+  const init = async () => {
+    const token = await AsyncLocalStorage.getItem(storageConst);
+    token !== null && dispatch(signinWithToken({ token: token }));
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
 
   const renderAuth = () => {
     return (
@@ -59,7 +71,6 @@ const App = () => {
     return (
       <Switch>
         <Route exact path="/" component={Main}></Route>
-
         <Redirect to="/" />
       </Switch>
     );
